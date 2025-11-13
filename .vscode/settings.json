@@ -14,10 +14,14 @@
     },
     "cmake.configureOnEdit": false,
     "cmake.automaticReconfigure": false,
-    "cmake.configureOnOpen": false,
-    "cmake.generator": "Ninja",
-    "cmake.cmakePath": "${userHome}/.pico-sdk/cmake/v3.31.5/bin/cmake",
-    "C_Cpp.debugShortcut": false,
+    "cmake.configureOnOpen": true,
+	"cmake.generator": "MinGW Makefiles",
+    "C_Cpp.debugShortcut": false,   
+    "cmake.buildDirectory": "${workspaceFolder}/build",
+    "cmake.environment": {
+		"PATH": "C:/VSARM/mingw/mingw32/bin;${env:PATH}"
+	},
+
     "terminal.integrated.env.windows": {
         "PICO_SDK_PATH": "${env:USERPROFILE}/.pico-sdk/sdk/2.2.0",
         "PICO_TOOLCHAIN_PATH": "${env:USERPROFILE}/.pico-sdk/toolchain/14_2_Rel1",
