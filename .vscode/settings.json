@@ -15,7 +15,7 @@
     "cmake.configureOnEdit": false,
     "cmake.automaticReconfigure": false,
     "cmake.configureOnOpen": true,
-	"cmake.generator": "MinGW Makefiles",
+	"cmake.generator": "Ninja",
     "C_Cpp.debugShortcut": false,   
     "cmake.buildDirectory": "${workspaceFolder}/build",
     "cmake.environment": {

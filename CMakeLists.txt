@@ -48,6 +48,7 @@ pico_enable_stdio_usb(EmbeddedMS02 1)
 target_link_libraries(EmbeddedMS02
         pico_stdlib
         hardware_adc
+        hardware_i2c
         )
 
 # Add the standard include files to the build
