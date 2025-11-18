@@ -1,8 +1,10 @@
 #include <stdio.h>
-#include <stdbool.h>
 #include "pico/stdlib.h"
 #include "hardware/adc.h"
+#include "hardware/gpio.h"
 #include "hardware/i2c.h"
+#include "hardware/pwm.h"
+#include "ov7670_driver.h"
 #include <string.h>
 
 #define I2C_PORT        i2c1
@@ -161,8 +163,10 @@ void lcd_print(const char *text) {
     }
 }
 
+
 int main() {
     stdio_init_all();
+    sleep_ms(2000);  // let USB/UART settle
 
     // Init I2C
     i2c_init(I2C_PORT, 100 * 1000);
@@ -205,12 +209,28 @@ int main() {
     gpio_set_dir(MOT_REV, GPIO_OUT);
 
     motors_stop();
+    ov7670_init_pins();
+    ov7670_start_xclk();
+    ov7670_init_i2c();
+
+    ov7670_apply_config(qvga_yuv);
+    sleep_ms(100);
 
     while (true) {
+    cam_capture_frame();
+    downscale_2x2();
 
-        char pressed_key = determineKey(c1, c2, c3);
-        if(pressed_key != 'N'){
-            printf("you pressed: %c\n", pressed_key);
+    // Header: 'F','R', width, height (big-endian)
+    putchar('F');
+    putchar('R');
+    putchar((SMALL_WIDTH >> 8) & 0xFF);
+    putchar(SMALL_WIDTH & 0xFF);
+    putchar((SMALL_HEIGHT >> 8) & 0xFF);
+    putchar(SMALL_HEIGHT & 0xFF);
+
+    for (int y = 0; y < SMALL_HEIGHT; y++) {
+        for (int x = 0; x < SMALL_WIDTH; x++) {
+            putchar(small_frame[y][x]);
         }
 
         uint16_t raw = adc_read();

@@ -35,20 +35,27 @@ pico_sdk_init()
 
 # Add executable. Default name is the project name, version 0.1
 
-add_executable(EmbeddedMS02 EmbeddedMS02.c )
+add_executable(EmbeddedMS02 
+    EmbeddedMS02.c
+    ov7670_driver.c
+)
 
 pico_set_program_name(EmbeddedMS02 "EmbeddedMS02")
 pico_set_program_version(EmbeddedMS02 "0.1")
 
 # Modify the below lines to enable/disable output over UART/USB
-pico_enable_stdio_uart(EmbeddedMS02 0)
+pico_enable_stdio_uart(EmbeddedMS02 1)
 pico_enable_stdio_usb(EmbeddedMS02 1)
+
+pico_generate_pio_header(EmbeddedMS02 ${CMAKE_CURRENT_LIST_DIR}/ov7670.pio)
 
 # Add the standard library to the build
 target_link_libraries(EmbeddedMS02
         pico_stdlib
         hardware_adc
         hardware_i2c
+        hardware_pwm
+        hardware_pio
         )
 
 # Add the standard include files to the build

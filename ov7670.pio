@@ -1,0 +1,9 @@
+.program ov7670_capture
+; Minimal sampler: repeatedly read GPIO0..7 via IN PINS, 8
+
+.wrap_target
+capture_loop:
+    in pins, 8        ; sample D0..D7 (on GPIO0..7) into ISR
+    push block        ; push 8 bits to RX FIFO
+    jmp capture_loop
+.wrap
