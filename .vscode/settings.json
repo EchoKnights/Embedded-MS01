@@ -42,6 +42,13 @@
     "raspberry-pi-pico.cmakePath": "${HOME}/.pico-sdk/cmake/v3.31.5/bin/cmake",
     "raspberry-pi-pico.ninjaPath": "${HOME}/.pico-sdk/ninja/v1.12.1/ninja",
     "files.associations": {
-        "ov7670.pio.h": "c"
-    }
+        "ov7670.pio.h": "c",
+        "stdlib.h": "c",
+        "stdint.h": "c",
+        "gpio.h": "c",
+        "cstdint": "c",
+        "i2c.h": "c",
+        "keypad_driver.h": "c"
+    },
+    "C_Cpp.errorSquiggles": "disabled"
 }

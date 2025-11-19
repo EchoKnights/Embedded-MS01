@@ -38,6 +38,10 @@ pico_sdk_init()
 add_executable(EmbeddedMS02 
     EmbeddedMS02.c
     ov7670_driver.c
+    motors_driver.c
+    buzzer_driver.c
+    i2c_lcd_driver.c
+    keypad_driver.c
 )
 
 pico_set_program_name(EmbeddedMS02 "EmbeddedMS02")
