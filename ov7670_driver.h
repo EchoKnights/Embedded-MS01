@@ -19,9 +19,6 @@ extern uint8_t small_frame[SMALL_HEIGHT][SMALL_WIDTH];
 void cam_capture_frame(void);
 void downscale_2x2(void);
 
-
-
-// --- Pin definitions (match your wiring) ---
 #define CAM_D0   0
 #define CAM_D1   1
 #define CAM_D2   2
@@ -38,18 +35,15 @@ void downscale_2x2(void);
 #define CAM_XCLK  13
 
 #define CAM_I2C   i2c0
-#define OV7670_ADDR 0x21    // 7-bit SCCB address (0x42/0x43 >> 1)
+#define OV7670_ADDR 0x21
 
-// init functions
 void ov7670_init_pins(void);
 void ov7670_start_xclk(void);
 void ov7670_init_i2c(void);
 
-// simple register R/W
 bool ov7670_read_reg(uint8_t reg, uint8_t *value);
 bool ov7670_write_reg(uint8_t reg, uint8_t value);
 
-// config structs
 typedef struct {
     uint8_t reg;
     uint8_t val;

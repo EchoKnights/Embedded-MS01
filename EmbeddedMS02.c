@@ -33,11 +33,13 @@
 
 #define buzzer_pin 0
 
-float YOLO_Read(target){
-    return rand();
+int YOLO_Read(){
+    return 101;
 }
 
 void controller(){
+
+    sleep_ms(1000);
 
     bool button_1 = false;
     bool tens_entered = false;
@@ -59,7 +61,7 @@ void controller(){
         }
         if(key == '3'){
             button_1 = true;
-        }else{
+        }else if(key != 'N'){
             button_1 = true;
             wrong = true;
         }
@@ -95,11 +97,14 @@ void controller(){
         if(key == '*'){
             return;
         }
-        if(!key == 'N' && !key == '#'){
-            tens = ((int) key) - 49;
+        if(!(key == 'N') && !(key == '#')){
+            tens = ((int) key) - 48;
             tens_entered = true;
+            printf("Tens: %d\n", tens);
         }
     }
+
+    sleep_ms(1000);
 
     while(!units_entered){
         lcd_clear(I2C_PORT);
@@ -110,18 +115,21 @@ void controller(){
         if(key == '*'){
             return;
         }
-        if(!key == 'N' && !key == '#'){
-            units = ((int) key) - 49;
+        if(!(key == 'N') && !(key == '#')){
+            units = ((int) key) - 48;
             units_entered = true;
+            printf("Units: %d\n", units);
         }
     }
 
     int value = tens * 10 + units;
+    printf("Value: %d\n", value);
 
-    char* target_confirm;
-    //concatenate
-    //target_confirm = TARGET: {value}CM
-    
+    char buffer[50];
+    snprintf(buffer, sizeof(buffer), "TARGET: %dCM", value);
+
+    const char* target_confirm = buffer;
+
     lcd_clear(I2C_PORT);
     lcd_print(I2C_PORT, target_confirm);
 
@@ -134,7 +142,7 @@ void controller(){
 
     char* distance_reading;
 
-    float result;
+    int result;
 
     while(!threshold){
 
@@ -142,9 +150,11 @@ void controller(){
 
         result = YOLO_Read();
 
-        //concatenate
-        //distance_reading = DISTANCE {YOLO_reading} CM
-        
+        char buffer[50];
+        snprintf(buffer, sizeof(buffer), "DISTANCE: %d CM", (int)result);
+
+        const char* distance_reading = buffer;
+                
         lcd_clear(I2C_PORT);
         lcd_print(I2C_PORT, distance_reading);
         lcd_move_cursor_next_line(I2C_PORT);
@@ -155,6 +165,7 @@ void controller(){
         }
         if(result > 100){
             threshold = true;
+            motors_stop(MOT_FWD, MOT_REV); 
         }
     }
 
@@ -168,12 +179,33 @@ void controller(){
     while(true){
         lcd_clear(I2C_PORT);
         lcd_print(I2C_PORT, "ACCESS GRANTED");
+
+        switch_buzzer_on(buzzer_pin);
+        sleep_ms(1000);
+        switch_buzzer_off(buzzer_pin);
+        sleep_ms(1000);
+        switch_buzzer_on(buzzer_pin);
+        sleep_ms(1000);
+        switch_buzzer_off(buzzer_pin);
+
         key = determine_key_pressed(row1, row2, row3, row4, col1, col2, col3);
         if(key == '*'){
+            switch_buzzer_off(buzzer_pin);
             return;
         }
     }
 
+}
+
+void keypad_test(){
+    char key;
+    while(true){
+        key = determine_key_pressed(row1, row2, row3, row4, col1, col2, col3);
+        if(key != 'N'){
+            printf("Key Pressed: %c\n", key);
+            sleep_ms(500);
+        }
+    }
 }
 
 int main() {
@@ -195,6 +227,7 @@ int main() {
 
     while(true){
         controller();
+        // keypad_test();
     }
 
     return 0;

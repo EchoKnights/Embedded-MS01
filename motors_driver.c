@@ -31,10 +31,13 @@ void motors_backward(uint forward_pin, uint reverse_pin) {
 void control_motors_with_potentiometer(uint potentiometer_pin, uint forward_pin, uint reverse_pin){
         uint16_t raw = adc_read();
         float norm = raw / 4095.0f;
-        if (norm < 0.40f) {
+        printf("Normalized value: %f\n", norm);
+        if (norm < 0.30f) {
             motors_backward(forward_pin, reverse_pin);
-        } else if (norm > 0.60f) {
+            printf("Moving backward\n");
+        } else if (norm > 0.80f) {
             motors_forward(forward_pin, reverse_pin);
+            printf("Moving forward\n");
         } else {
             motors_stop(forward_pin, reverse_pin);
         }
