@@ -37,7 +37,7 @@ void lcd_send(i2c_inst_t *i2c_port, uint8_t value, uint8_t mode) {
     lcd_write4(i2c_port, (value << 4) & 0xF0, mode);
 }
 
-// --- Public wrapper helpers ---
+// --- Wrapper helpers ---
 void lcd_cmd(i2c_inst_t *i2c_port, uint8_t cmd) {
     lcd_send(i2c_port, cmd, 0x00);
     sleep_ms(2);
