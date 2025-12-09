@@ -176,7 +176,8 @@ void controller(){
 
     sleep_ms(4000);
     
-    while(true){
+    int twice = 0;
+    while(twice < 2){
         lcd_clear(I2C_PORT);
         lcd_print(I2C_PORT, "ACCESS GRANTED");
 
@@ -188,6 +189,17 @@ void controller(){
         sleep_ms(1000);
         switch_buzzer_off(buzzer_pin);
 
+        key = determine_key_pressed(row1, row2, row3, row4, col1, col2, col3);
+        if(key == '*'){
+            switch_buzzer_off(buzzer_pin);
+            return;
+        }
+        twice++;
+    }
+
+    while(true){
+        lcd_clear(I2C_PORT);
+        lcd_print(I2C_PORT, "CLUE 7541");
         key = determine_key_pressed(row1, row2, row3, row4, col1, col2, col3);
         if(key == '*'){
             switch_buzzer_off(buzzer_pin);
