@@ -4,3 +4,4 @@ build
 main.c
 deprecated_webcam.h
 deprecated_webcam.c
+Models/

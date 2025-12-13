@@ -64,40 +64,51 @@
 //   - Heartbeat updates the "last seen" timestamp; if no message seen for TIMEOUT_MS, treat as released.
 //   - Non-blocking: main loop stays responsive.
 
-#include <webcam_driver.h>
+#include "webcam_driver.h"
+#include <stdlib.h>
+#include <string.h>
+#include <stdio.h>
 
-float get_webcam_detection(){
-	char line[MAX_LINE];
-	int pos = 0;
-	while(true){
+float poll_usb_distance(void) {
+	static char line[MAX_LINE];
+	static int pos = 0;
+
+	while (true) {
 		int c = getchar_timeout_us(0);
-		if(c != PICO_ERROR_TIMEOUT){
-			if(c == '\r'){
-				return 404.0;
-			}else if(c == '\n'){
-				line[pos] = '\0';
-				if (pos > 0) {
-					// handle commands
-					if (strcmp(line, "H") == 0 || strcmp(line, "HB") == 0) {
-						return 200.0;
-					} else {
-						return 300.0;
-					} 
-				}
-				pos = 0;
-			}else{
-				// accumulate character
-				if(pos < MAX_LINE - 1){
-					line[pos++] = (char) c;
-				}else{
-					pos = 0;
-					printf("IGNORED: LINE TOO LONG\r\n");
-				}
-			}
+		if (c == PICO_ERROR_TIMEOUT) {
+			// No more data right now
+			return USB_NO_DATA;   // e.g. -1.0f
 		}
-		return 500.0;
+
+		if (c == '\r') {
+			continue; // ignore CR
+		}
+
+		if (c == '\n') {
+			line[pos] = '\0';
+			pos = 0;
+
+			if (strlen(line) == 0) {
+				return USB_NO_DATA;
+			}
+
+			// Try parsing float
+			char *end;
+			float value = strtof(line, &end);
+			if (end == line) {
+				return USB_PARSE_ERROR; // e.g. -2.0f
+			}
+
+			return value; // ✅ valid distance
+		}
+
+		if (pos < MAX_LINE - 1) {
+			line[pos++] = (char)c;
+		} else {
+			pos = 0; // overflow, reset
+			return USB_PARSE_ERROR;
+		}
 	}
-	return 505.0;
 }
 
 // bool control_while_maintaining_assert_for(
