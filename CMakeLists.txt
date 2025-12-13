@@ -42,7 +42,11 @@ add_executable(EmbeddedMS02
     buzzer_driver.c
     i2c_lcd_driver.c
     keypad_driver.c
+    webcam_driver.c
 )
+
+pico_enable_stdio_usb(EmbeddedMS02 1)
+pico_enable_stdio_uart(EmbeddedMS02 0)
 
 pico_set_program_name(EmbeddedMS02 "EmbeddedMS02")
 pico_set_program_version(EmbeddedMS02 "0.1")
