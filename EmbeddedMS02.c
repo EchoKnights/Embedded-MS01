@@ -48,11 +48,12 @@ void controller(){
     bool threshold = false;
     float acceptable_drop = 500;
 
+    lcd_clear(I2C_PORT);
+    lcd_print(I2C_PORT, "ENTER 1-DIGIT");
+    lcd_move_cursor_next_line(I2C_PORT);
+    lcd_print(I2C_PORT, "SHAPE INDEX");
+
     while(!button_1){
-        lcd_clear(I2C_PORT);
-        lcd_print(I2C_PORT, "ENTER 1-DIGIT");
-        lcd_move_cursor_next_line(I2C_PORT);
-        lcd_print(I2C_PORT, "SHAPE INDEX");
         key = determine_key_pressed(row1, row2, row3, row4, col1, col2, col3);
         if(key == '*'){
             return;
@@ -65,11 +66,12 @@ void controller(){
         }
     }
 
+    lcd_clear(I2C_PORT);
+    lcd_print(I2C_PORT, "ERROR: RETRY");
+    lcd_move_cursor_next_line(I2C_PORT);
+    lcd_print(I2C_PORT, "SHAPE INDEX");
+
     while(wrong){
-        lcd_clear(I2C_PORT);
-        lcd_print(I2C_PORT, "ERROR: RETRY");
-        lcd_move_cursor_next_line(I2C_PORT);
-        lcd_print(I2C_PORT, "SHAPE INDEX");
         key = determine_key_pressed(row1, row2, row3, row4, col1, col2, col3);
         if(key == '*'){
             return;
@@ -86,11 +88,12 @@ void controller(){
 
     sleep_ms(4000);
 
+    lcd_clear(I2C_PORT);
+    lcd_print(I2C_PORT, "ENTER 2-DIGIT");
+    lcd_move_cursor_next_line(I2C_PORT);
+    lcd_print(I2C_PORT, "DISTANCE CLUE CM");
+
     while(!tens_entered){
-        lcd_clear(I2C_PORT);
-        lcd_print(I2C_PORT, "ENTER 2-DIGIT");
-        lcd_move_cursor_next_line(I2C_PORT);
-        lcd_print(I2C_PORT, "DISTANCE CLUE CM");
         key = determine_key_pressed(row1, row2, row3, row4, col1, col2, col3);
         if(key == '*'){
             return;
@@ -102,13 +105,14 @@ void controller(){
         }
     }
 
-    sleep_ms(1000);
+    sleep_ms(400);
+
+    lcd_clear(I2C_PORT);
+    lcd_print(I2C_PORT, "ENTER 2-DIGIT");
+    lcd_move_cursor_next_line(I2C_PORT);
+    lcd_print(I2C_PORT, "DISTANCE CLUE CM");
 
     while(!units_entered){
-        lcd_clear(I2C_PORT);
-        lcd_print(I2C_PORT, "ENTER 2-DIGIT");
-        lcd_move_cursor_next_line(I2C_PORT);
-        lcd_print(I2C_PORT, "DISTANCE CLUE CM");
         key = determine_key_pressed(row1, row2, row3, row4, col1, col2, col3);
         if(key == '*'){
             return;
@@ -169,13 +173,11 @@ void controller(){
 		// Heartbeat timeout (USB silence)
 		if (now - last_seen > acceptable_drop) {
 			in_range_since = 0;
-			continue;
 		}
 
 		// Range check
 		if (last_reading < value - 2.0f || last_reading > value + 2.0f) {
 			in_range_since = 0;
-			continue;
 		}
 
 		// Start timing if newly in range
@@ -199,7 +201,7 @@ void controller(){
 			break;
 		}
 
-		sleep_ms(1);
+		sleep_ms(100);
 	}
 
     lcd_clear(I2C_PORT);

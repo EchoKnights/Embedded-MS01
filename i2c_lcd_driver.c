@@ -3,17 +3,25 @@
 #include "pico/stdlib.h"
 #include "hardware/i2c.h"
 
+i2c_inst_t port; uint sda; uint scl;
+
 void init_i2c_pins(i2c_inst_t *i2c_port, uint sda_pin, uint scl_pin){    // Init I2C
-    i2c_init(i2c_port, 100 * 1000);
+    i2c_init(i2c_port, 50 * 1000);
     gpio_set_function(sda_pin, GPIO_FUNC_I2C);
     gpio_set_function(scl_pin, GPIO_FUNC_I2C);
     gpio_pull_up(sda_pin);
     gpio_pull_up(scl_pin);
+    port = *i2c_port;
+    sda = sda_pin;
+    scl = scl_pin;
 }
 
 // --- Low level write to PCF8574 ---
 void pcf8574_write(i2c_inst_t *i2c_port, uint8_t data){
-    i2c_write_blocking(i2c_port, LCD_ADDRESS, &data, 1, false);
+    int rc = i2c_write_blocking(i2c_port, LCD_ADDRESS, &data, 1, false);
+    if (rc < 0) {
+        init_i2c_pins(&port, sda, scl);
+    }
 }
 
 // --- Pulse Enable Line ---
